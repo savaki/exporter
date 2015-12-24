@@ -1,0 +1,15 @@
+# ignore intellij files
+.idea
+*.iml
+*.ipr
+*.iws
+
+# ignore temporary files
+*.html
+
+# ignore generated files
+target
+exporter
+*.zip
+*.gz
+
