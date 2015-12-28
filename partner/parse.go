@@ -31,6 +31,7 @@ type Partner struct {
 	Education       []string          `json:"education,omitempty"`
 	ContactInfo     *ContactInfo      `json:"contact-info,omitempty"`
 	Summary         string            `json:"summary,omitempty"`
+	SummaryRaw      string            `json:"summary-raw,omitempty"`
 	Qualifications  []string          `json:"qualifications,omitempty"`
 }
 
@@ -87,12 +88,15 @@ func Parse(r io.Reader) (*Partner, error) {
 // -- Summary ------------------------------------------------------------------
 
 func parseSummary(partner *Partner, s *goquery.Selection) error {
-	h, err := s.Find(".view-stories").First().Html()
+	// parse the summary
+	summary := s.Find(".view-stories").First()
+	h, err := summary.Html()
 	if err != nil {
 		return err
 	}
+	partner.Summary = strings.TrimSpace(summary.Text())
+	partner.SummaryRaw = strings.TrimSpace(h)
 
-	partner.Summary = strings.TrimSpace(h)
 	partner.Image = s.Find(".carousel-img img").First().AttrOr("src", "")
 	partner.Name = s.Find("h1#top").First().Text()
 	if strings.HasSuffix(partner.Name, "Partner") {
